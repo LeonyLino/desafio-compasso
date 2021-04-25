@@ -1,0 +1,5 @@
+Antes de subir o codigo, favor observar antes o application.properties 
+para ajustar o banco de acordo com as configurações, sendo assim a baseline (V1__baseline_init.sql)
+executada pelo flyway ja tem um script pronto para criação da entidade junto dos inserts.
+
+Obrigado!

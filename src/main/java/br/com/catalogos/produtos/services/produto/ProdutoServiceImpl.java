@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import br.com.catalogos.produtos.exceptions.EntidadeNaoEncontradaException;
@@ -64,7 +65,13 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	public List<ProdutoDTO> buscarPorFiltros(String nameDescription, BigDecimal minPrice, BigDecimal maxPrice) {
-		return pRepository.findAll(new ProdutoSpacs(nameDescription, minPrice, maxPrice)).stream()
-				.map(pDTOConverter::convert).collect(Collectors.toList());
+		Specification<Produto> querySpecification = Specification
+				.where(ProdutoSpacs.nome(nameDescription != null ? nameDescription : " ")
+						.or(ProdutoSpacs.description(nameDescription != null ? nameDescription : " "))
+						.and(ProdutoSpacs.minPrice(minPrice))
+						.and(ProdutoSpacs.maxPrice(maxPrice)));
+
+		return pRepository.findAll(querySpecification).stream().map(pDTOConverter::convert)
+				.collect(Collectors.toList());
 	}
 }

@@ -1,49 +1,49 @@
 package br.com.catalogos.produtos.specification;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.StringUtils;
 
 import br.com.catalogos.produtos.models.Produto;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class ProdutoSpacs implements Specification<Produto> {
+public class ProdutoSpacs {
 
-	private static final long serialVersionUID = 1L;
+	public static Specification<Produto> nome(String name) {
+		if (name == null || name.isEmpty()) {
+			return null;
+		} else {
+			return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+					.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
 
-	private String nameDescription;
-	private BigDecimal minPrice;
-	private BigDecimal maxPrice;
-
-	@Override
-	public Predicate toPredicate(Root<Produto> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-		List<Predicate> predicates = new ArrayList<>();
-
-		if (StringUtils.hasText(nameDescription)) {
-			predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),
-					"%" + nameDescription.toLowerCase() + "%"));
 		}
+	}
 
-		if (minPrice != null && minPrice.compareTo(BigDecimal.ZERO) > 0) {
-			predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+	public static Specification<Produto> description(String description) {
+		if (description == null || description.isEmpty()) {
+			return null;
+		} else {
+			return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+					.like(criteriaBuilder.lower(root.get("description")), "%" + description.toLowerCase() + "%");
+
 		}
+	}
 
-		if (maxPrice != null && maxPrice.compareTo(BigDecimal.ZERO) > 0) {
-			predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+	public static Specification<Produto> minPrice(BigDecimal minPrice) {
+		if (minPrice == null) {
+			return null;
+		} else {
+			return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("price"),
+					minPrice);
 		}
+	}
 
-		query.distinct(true);
-
-		return criteriaBuilder.and(predicates.toArray(new Predicate[1]));
+	public static Specification<Produto> maxPrice(BigDecimal maxPrice) {
+		if (maxPrice == null) {
+			return null;
+		} else {
+			return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("price"),
+					maxPrice);
+		}
 	}
 
 }
