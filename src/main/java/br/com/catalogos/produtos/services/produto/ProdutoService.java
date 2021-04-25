@@ -1,5 +1,6 @@
 package br.com.catalogos.produtos.services.produto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import br.com.catalogos.produtos.models.dto.ProdutoDTO;
@@ -15,4 +16,6 @@ public interface ProdutoService {
 	List<ProdutoDTO> listarTodos();
 	
 	void deletar(Long id);
+	
+	List<ProdutoDTO> buscarPorFiltros(String nameDescription, BigDecimal minPrice, BigDecimal maxPrice);
 }

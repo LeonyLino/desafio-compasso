@@ -1,5 +1,6 @@
 package br.com.catalogos.produtos.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.catalogos.produtos.exceptions.EntidadeNaoEncontradaException;
@@ -59,12 +61,19 @@ public class ProdutoRestController {
 		return pService.listarTodos();
 	}
 
+	@GetMapping("/search")
+	public List<ProdutoDTO> listarPorFiltros(@RequestParam(value = "q", required = false) String q,
+			@RequestParam(value = "min_price", required = false) BigDecimal minPrice,
+			@RequestParam(value = "max_price", required = false) BigDecimal maxPrice) {
+		return pService.buscarPorFiltros(q, minPrice, maxPrice);
+	}
+
 	@DeleteMapping("{id}")
 	public ResponseEntity<Object> deletePorId(@PathVariable Long id) {
-		try{
+		try {
 			pService.deletar(id);
 			return ResponseEntity.ok("ok");
-		}catch (EntidadeNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 	}

@@ -2,6 +2,8 @@ package br.com.catalogos.produtos.models.dto;
 
 
 
+import java.math.BigDecimal;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,6 +24,6 @@ public class ProdutoDTO {
 	private String description;
 	@NotNull
 	@DecimalMin("0.00")
-	private float price;
+	private BigDecimal price;
 
 }

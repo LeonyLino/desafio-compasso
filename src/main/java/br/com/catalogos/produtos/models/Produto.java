@@ -1,6 +1,7 @@
 package br.com.catalogos.produtos.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,5 +39,5 @@ public class Produto implements Serializable {
 	private String description;
 
 	@Column(name = "PRICE", nullable = false)
-	private float price;
+	private BigDecimal price;
 }

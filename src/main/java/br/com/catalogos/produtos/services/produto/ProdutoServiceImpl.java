@@ -1,5 +1,6 @@
 package br.com.catalogos.produtos.services.produto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import br.com.catalogos.produtos.models.Produto;
 import br.com.catalogos.produtos.models.dto.ProdutoDTO;
 import br.com.catalogos.produtos.models.dto.converter.ProdutoDTOConverter;
 import br.com.catalogos.produtos.repository.ProdutoRepository;
+import br.com.catalogos.produtos.specification.ProdutoSpacs;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -60,4 +62,9 @@ public class ProdutoServiceImpl implements ProdutoService {
 		pRepository.deleteById(this.buscarPorId(id).getId());
 	}
 
+	@Override
+	public List<ProdutoDTO> buscarPorFiltros(String nameDescription, BigDecimal minPrice, BigDecimal maxPrice) {
+		return pRepository.findAll(new ProdutoSpacs(nameDescription, minPrice, maxPrice)).stream()
+				.map(pDTOConverter::convert).collect(Collectors.toList());
+	}
 }
