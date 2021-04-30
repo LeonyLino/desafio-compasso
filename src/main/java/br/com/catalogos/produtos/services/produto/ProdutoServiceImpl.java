@@ -44,7 +44,6 @@ public class ProdutoServiceImpl implements ProdutoService {
 		produto.setPrice(dto.getPrice());
 
 		return pDTOConverter.convert(pRepository.save(produto));
-
 	}
 
 	@Override
