@@ -58,7 +58,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	@Transactional
-	public void deletar(Long id) {
+	public void deletarPorId(Long id) {
 		pRepository.deleteById(this.buscarPorId(id).getId());
 	}
 

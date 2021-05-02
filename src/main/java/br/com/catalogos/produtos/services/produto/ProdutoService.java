@@ -15,7 +15,7 @@ public interface ProdutoService {
 	
 	List<ProdutoDTO> listarTodos();
 	
-	void deletar(Long id);
+	void deletarPorId(Long id);
 	
 	List<ProdutoDTO> buscarPorFiltros(String nameDescription, BigDecimal minPrice, BigDecimal maxPrice);
 }

@@ -36,7 +36,7 @@ public class ProdutoRestController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> buscar(@PathVariable Long id, @RequestBody ProdutoDTO dto) {
+	public ResponseEntity<Object> editar(@PathVariable Long id, @RequestBody ProdutoDTO dto) {
 		try {
 			dto.setId(id);
 			return ResponseEntity.status(HttpStatus.OK).body(pService.editar(dto));
@@ -47,7 +47,7 @@ public class ProdutoRestController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProdutoDTO> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<ProdutoDTO> buscar(@PathVariable Long id) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(pService.buscar(id));
 		} catch (EntidadeNaoEncontradaException e) {
@@ -57,7 +57,7 @@ public class ProdutoRestController {
 	}
 
 	@GetMapping
-	public List<ProdutoDTO> listarTodos() {
+	public List<ProdutoDTO> listar() {
 		return pService.listarTodos();
 	}
 
@@ -69,9 +69,9 @@ public class ProdutoRestController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<Object> deletePorId(@PathVariable Long id) {
+	public ResponseEntity<Object> deletar(@PathVariable Long id) {
 		try {
-			pService.deletar(id);
+			pService.deletarPorId(id);
 			return ResponseEntity.ok("ok");
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
