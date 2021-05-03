@@ -3,6 +3,9 @@ package br.com.catalogos.produtos.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -53,6 +56,20 @@ class ProdutoServiceTests {
 		ProdutoDTO dtoTeste = pServiceImpl.buscar(Mockito.anyLong());
 
 		assertEquals(dto, dtoTeste);
+	}
+
+	@Test
+	void deveriaDeletarUmProdutoValido() {
+		ProdutoDTO pDTO = ProdutoDTO.builder().build();
+		Produto expectedDeletedProduto = new Produto();
+
+		when(pRepository.findById(pDTO.getId())).thenReturn(Optional.of(expectedDeletedProduto));
+		doNothing().when(pRepository).deleteById(pDTO.getId());
+
+		pServiceImpl.deletarPorId(pDTO.getId());
+
+		verify(pRepository, times(1)).findById(pDTO.getId());
+		verify(pRepository, times(1)).deleteById(pDTO.getId());
 	}
 
 	private ProdutoDTO convert(Produto produto) {
