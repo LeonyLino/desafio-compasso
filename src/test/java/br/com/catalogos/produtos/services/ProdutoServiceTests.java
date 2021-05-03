@@ -8,15 +8,16 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.catalogos.produtos.exceptions.EntidadeNaoEncontradaException;
 import br.com.catalogos.produtos.models.Produto;
+import br.com.catalogos.produtos.models.dto.ProdutoDTO;
 import br.com.catalogos.produtos.models.dto.converter.ProdutoDTOConverter;
 import br.com.catalogos.produtos.repository.ProdutoRepository;
 import br.com.catalogos.produtos.services.produto.ProdutoServiceImpl;
@@ -33,15 +34,10 @@ class ProdutoServiceTests {
 	@Mock
 	private ProdutoDTOConverter pDTOConverter;
 
-	@BeforeEach
-	public void iniciar() {
-		pDTOConverter = new ProdutoDTOConverter();
-	}
-
 	@Test
 	void deveriaRetornarNenhumRegistroLocalizado() {
 		EntidadeNaoEncontradaException exception = assertThrows(EntidadeNaoEncontradaException.class,
-				() -> pServiceImpl.buscar(Long.MAX_VALUE));
+				() -> pServiceImpl.buscar(Long.MIN_VALUE));
 
 		assertTrue(exception.getMessage().contains("Nenhum registro localizado."));
 	}
@@ -50,27 +46,17 @@ class ProdutoServiceTests {
 	void deveriaRetornarUmProdutoValido() {
 		Optional<Produto> pOptional = Optional.of(new Produto(3L, "Echo Show 5",
 				"Smart Speaker com tela de 5,5\" e Alexa - Cor Preta", BigDecimal.valueOf(569.05)));
-		when(pRepository.findById(3L)).thenReturn(pOptional);
-//		ProdutoDTO dto = pDTOConverter.convert(pOptional.get());
-//		ProdutoDTO dtoTeste = pServiceImpl.buscar(3L);
+		when(pRepository.findById(Mockito.anyLong())).thenReturn(pOptional);
+		ProdutoDTO dto = this.convert(pOptional.get());
 
-		assertEquals(pOptional, pRepository.findById(3L));
+		when(pDTOConverter.convert(pOptional.get())).thenReturn(dto);
+		ProdutoDTO dtoTeste = pServiceImpl.buscar(Mockito.anyLong());
+
+		assertEquals(dto, dtoTeste);
 	}
 
-//	@Test
-//	void deveriaRetornarUmProdutoEntre300e600() {
-//		BigDecimal minPrice = BigDecimal.valueOf(300);
-//		BigDecimal maxPrice = BigDecimal.valueOf(600);
-//		List<Produto> produtoList = new ArrayList<>();
-//		produtoList.add(new Produto(3L, "Echo Show 5", "Smart Speaker com tela de 5,5\" e Alexa - Cor Preta",
-//				BigDecimal.valueOf(569.05)));
-//		produtoList.add(new Produto(2L, "Echo Dot (3ª Geração)", "Smart Speaker com Alexa - Cor Preta",
-//				BigDecimal.valueOf(331.55)));
-//		List<ProdutoDTO> dtoList = produtoList.stream().map(pDTOConverter::convert).collect(Collectors.toList());
-//
-//		when(pService.buscarPorFiltros(null, minPrice, maxPrice)).thenReturn(dtoList);
-//		List<ProdutoDTO> dtoListTeste = pService.buscarPorFiltros(null, minPrice, maxPrice);
-//
-//		assertEquals(dtoList, dtoListTeste);
-//	}
+	private ProdutoDTO convert(Produto produto) {
+		return ProdutoDTO.builder().id(produto.getId()).name(produto.getName()).description(produto.getDescription())
+				.price(produto.getPrice()).build();
+	}
 }
